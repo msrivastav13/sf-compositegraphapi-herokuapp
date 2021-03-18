@@ -8,8 +8,8 @@ const HOST = process.env.HOST;
 const PORT = process.env.PORT;
 
 const app = express();
-app.use(helmet);
-app.use(compression);
+app.use(helmet());
+app.use(compression());
 
 const conn = new jsforce.Connection();
 
