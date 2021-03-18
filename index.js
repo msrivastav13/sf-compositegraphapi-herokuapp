@@ -11,7 +11,7 @@ const app = express();
 app.use(helmet);
 app.use(compression);
 
-const conn = jsforce.Connection();
+const conn = new jsforce.Connection();
 
 app.get('/', async (req, res) => {
     try {
@@ -32,7 +32,6 @@ app.get('/', async (req, res) => {
         res.json(JSON.stringify(e));
     }
 });
-
 app.listen(PORT, ()=> {
     console.log('Server Started on ' + HOST + 'on port ' + PORT);
 });
