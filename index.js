@@ -44,8 +44,8 @@ app.get("/", async (req, res) => {
     );
 
     const campaignMember = {
-      campaignId: "@{Campaign1.Id}",
-      leadId: "@{Lead1.Id}",
+      campaignId: "@{Campaign1.id}",
+      leadId: "@{Lead1.id}",
     };
     const campiagnMemberInput = new Request.CompositeSubRequest(
       "POST",
