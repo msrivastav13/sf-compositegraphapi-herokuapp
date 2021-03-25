@@ -5,7 +5,6 @@ const jsforce = require('jsforce');
 const { getToken } = require('sf-jwt-token');
 const request = require('./compositeGraphBuilder');
 
-
 const HOST = process.env.HOST;
 const PORT = process.env.PORT;
 
