@@ -15,66 +15,70 @@ app.use(compression());
 const conn = new jsforce.Connection();
 
 app.get("/", async (req, res) => {
-  try {
-    const jwttokenresponse = await getToken({
-      iss: process.env.CLIENT_ID,
-      sub: process.env.USERNAME,
-      aud: process.env.LOGIN_URL,
-      privateKey: process.env.PRIVATE_KEY,
-    });
-    conn.initialize({
-      instanceUrl: jwttokenresponse.instance_url,
-      accessToken: jwttokenresponse.access_token,
-    });
+    try {
+        const jwttokenresponse = await getToken({
+            iss: process.env.CLIENT_ID,
+            sub: process.env.USERNAME,
+            aud: process.env.LOGIN_URL,
+            privateKey: process.env.PRIVATE_KEY,
+        });
+        conn.initialize({
+            instanceUrl: jwttokenresponse.instance_url,
+            accessToken: jwttokenresponse.access_token,
+        });
 
-    const lead = { LastName: "Mohith", Company: "Salesforce" };
-    const leadInput = new Request.CompositeSubRequest(
-      "POST",
-      "/services/data/v51.0/sobjects/Lead/",
-      "Lead1",
-      lead
-    );
+        const lead = { LastName: "Mohith", Company: "Salesforce" };
+        const leadInput = new Request.CompositeSubRequestBuilder()
+            .withMethod("POST")
+            .withUrl("/services/data/v51.0/sobjects/Lead/")
+            .withReferenceId("Lead1")
+            .withBody(lead)
+            .build();
 
-    const campaign = { Name: "Test Campaign" };
-    const campaignInput = new Request.CompositeSubRequest(
-      "POST",
-      "/services/data/v51.0/sobjects/Campaign/",
-      "Campaign1",
-      campaign
-    );
+        const campaign = { Name: "Test Campaign" };
+        const campaignInput = new Request.CompositeSubRequestBuilder()
+            .withMethod("POST")
+            .withUrl("/services/data/v51.0/sobjects/Campaign/")
+            .withReferenceId("Campaign1")
+            .withBody(campaign)
+            .build();
 
-    const campaignMember = {
-      campaignId: "@{Campaign1.id}",
-      leadId: "@{Lead1.id}",
-    };
-    const campiagnMemberInput = new Request.CompositeSubRequest(
-      "POST",
-      "/services/data/v51.0/sobjects/CampaignMember/",
-      "CampaignMember1",
-      campaignMember
-    );
+        const campaignMember = {
+            campaignId: "@{Campaign1.Id}",
+            leadId: "@{Lead1.Id}",
+        };
+        const campiagnMemberInput = new Request.CompositeSubRequestBuilder()
+            .withMethod("POST")
+            .withUrl("/services/data/v51.0/sobjects/CampaignMember/")
+            .withReferenceId("CampaignMember1")
+            .withBody(campaignMember)
+            .build();
 
-    const graph = new Request.Graph("leadgraph", [
-      leadInput,
-      campaignInput,
-      campiagnMemberInput,
-    ]);
-    const finalRequest = new Request.CompositeGraphRequest([graph]);
+        const graph1 = new Request.GraphBuilder()
+            .withGraphId("leadgraph")
+            .addCompositeRequest(leadInput)
+            .addCompositeRequest(campaignInput)
+            .addCompositeRequest(campiagnMemberInput)
+            .build();
 
-    console.log(JSON.stringify(finalRequest));
+        const requestBody = new Request.CompositeGraphBuilder()
+            .addGraph(graph1)
+            .build();
 
-    const response = await conn.requestPost(
-      "/services/data/v51.0/composite/graph",
-      finalRequest
-    );
+        console.log(JSON.stringify(requestBody));
 
-    //const accounts = await conn.query("Select Id, Name From Account LIMIT 20");
-    res.json(response);
-  } catch (e) {
-    console.log(e);
-    res.json(JSON.stringify(e));
-  }
+        const response = await conn.requestPost(
+            "/services/data/v51.0/composite/graph",
+            finalRequest
+        );
+
+        //const accounts = await conn.query("Select Id, Name From Account LIMIT 20");
+        res.json(response);
+    } catch (e) {
+        console.log(e);
+        res.json(JSON.stringify(e));
+    }
 });
 app.listen(PORT, () => {
-  console.log("Server Started on " + HOST + "on port " + PORT);
+    console.log("Server Started on " + HOST + "on port " + PORT);
 });

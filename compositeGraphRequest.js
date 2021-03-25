@@ -1,30 +1,58 @@
-class CompositeGraphRequest {
-    graphs = [];
-    constructor(graphs) {
-        this.graphs = graphs;
+class CompositeGraphBuilder {
+    constructor() {
+        this.compositeRequest = {};
+        this.compositeRequest.graphs = [];
+    }
+    addGraph(graph) {
+        this.compositeRequest.graphs.push(graph);
+        return this;
+    }
+    build() {
+        return this.compositeRequest;
     }
 }
 
-class CompositeSubRequest {
-    method;
-    url;
-    referenceId;
-    body;
-    constructor(method, url, referenceId, body) {
-        this.method = method;
-        this.url = url;
-        this.referenceId = referenceId;
-        this.body = body;
+class CompositeSubRequestBuilder {
+    constructor() {
+        this.compositeSubRequest = {};
+    }
+    withMethod(method) {
+        this.compositeSubRequest.method = method;
+        return this;
+    }
+    withUrl(url){
+        this.compositeSubRequest.url = url;
+        return this;
+    }
+    withBody(body){
+        this.compositeSubRequest.body = body;
+        return this;
+    }
+    withReferenceId(referenceId) {
+        this.compositeSubRequest.referenceId = referenceId;
+        return this;
+    }
+    build() {
+        return this.compositeSubRequest;
     }
 }
 
-class Graph {
-    graphId;
-    compositeRequest = [];
-    constructor(graphId, compositeRequest) {
-        this.graphId = graphId;
-        this.compositeRequest = compositeRequest;
+class GraphBuilder {
+    constructor() {
+        this.graph = {};
+        this.graph.compositeRequest = [];
+    }
+    withGraphId(graphId){
+        this.graph.graphId = graphId;
+        return this;
+    }
+    addCompositeRequest(compositeRequest) {
+        this.graph.compositeRequest.push(compositeRequest);
+        return this;
+    }
+    build() {
+        return this.graph;
     }
 }
 
-module.exports = {CompositeGraphRequest, CompositeSubRequest, Graph};
+module.exports = {CompositeGraphBuilder, CompositeSubRequestBuilder, GraphBuilder};
