@@ -69,7 +69,7 @@ app.get("/", async (req, res) => {
 
         const response = await conn.requestPost(
             "/services/data/v51.0/composite/graph",
-            finalRequest
+            requestBody
         );
 
         //const accounts = await conn.query("Select Id, Name From Account LIMIT 20");
