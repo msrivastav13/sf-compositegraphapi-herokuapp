@@ -63,7 +63,7 @@ app.get("/", async (req, res) => {
     console.log(JSON.stringify(finalRequest));
 
     const response = await conn.requestPost(
-      "/services/data/v50.0/composite/graph",
+      "/services/data/v51.0/composite/graph",
       finalRequest
     );
 
