@@ -2,7 +2,9 @@ const express = require('express');
 const helmet = require('helmet');
 const compression = require('compression');
 const jsforce = require('jsforce');
-const {getToken} = require('sf-jwt-token');
+const { getToken } = require('sf-jwt-token');
+const request = require('./compositeGraphBuilder');
+
 
 const HOST = process.env.HOST;
 const PORT = process.env.PORT;
@@ -26,13 +28,53 @@ app.get('/', async (req, res) => {
             accessToken: jwttokenresponse.access_token
         });
 
-        const accounts = await conn.query("Select Id, Name From Account LIMIT 20");
-        res.json(accounts);
-    } catch(e){
+
+        const lead = { LastName: "Trailhead", Company: "Salesforce" };
+        const leadCompositeRequest = new request.CompositeSubRequestBuilder()
+            .withBody(lead)
+            .withMethod("POST")
+            .withReferenceId("Lead1")
+            .withUrl("/services/data/v51.0/sobjects/Lead")
+            .build();
+
+        const campaign = { Name: "Campaign1" };
+        const campaignCompositeRequest = new request.CompositeSubRequestBuilder()
+            .withBody(campaign)
+            .withMethod("POST")
+            .withReferenceId("Campaign1")
+            .withUrl("/services/data/v51.0/sobjects/Campaign")
+            .build();
+
+        const campaignMember = { leadId: '@{Lead1.id}', campaignId: '@{Campaign1.id}' };
+        const campaignMemberCompositeRequest = new request.CompositeSubRequestBuilder()
+            .withBody(campaignMember)
+            .withMethod("POST")
+            .withReferenceId("campaignMember1")
+            .withUrl("/services/data/v51.0/sobjects/CampaignMember")
+            .build();
+
+        const graph1 = new request.GraphBuilder()
+            .withGraphId("graph1")
+            .addCompositeSubRequest(leadCompositeRequest)
+            .addCompositeSubRequest(campaignCompositeRequest)
+            .addCompositeSubRequest(campaignMemberCompositeRequest)
+            .build();
+
+        const graphApiInput = new request.CompositeGraphBuilder()
+            .addGraph(graph1)
+            .build();
+
+        const resp = await conn.requestPost(
+            '/services/data/v51.0/composite/graph',
+            graphApiInput
+        );
+
+        res.json(resp);
+    } catch (e) {
         console.log(e);
         res.json(JSON.stringify(e));
     }
 });
-app.listen(PORT, ()=> {
+app.listen(PORT, () => {
     console.log('Server Started on ' + HOST + 'on port ' + PORT);
 });
