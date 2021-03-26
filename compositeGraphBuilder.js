@@ -48,7 +48,7 @@ class CompositeSubRequestBuilder {
     }
 
     withUrl(Url) {
-        this.compositeSubRequest.Url = Url;
+        this.compositeSubRequest.url = Url;
         return this;
     }
 
