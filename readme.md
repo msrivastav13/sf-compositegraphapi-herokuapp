@@ -1,3 +1,14 @@
+## SF-COMPOSITEGRAPHAPI-HEROKUAPP
+
+This is a Node.js implementation for [Salesforce Graph API](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/using_resources_composite_graph.htm).
+
+The `compositeGraphBuilder.js` shows how to use [fluent interface](https://martinfowler.com/bliki/FluentInterface.html) to build request for Salesforce Composite Graph API.
+
+Connection between Salesforce and Heroku is implemented using `ConnectedApps` and uses OAuth 2.0 JWT Bearer Flow for Server-to-Server Integration
+
+## Example Implementation
+
+``` javascript
 const request = require('./compositeGraphBuilder');
 
 const lead = {LastName : "Trailhead", Company: "Salesforce"};
@@ -36,3 +47,16 @@ const graphApiInput = new request.CompositeGraphBuilder()
     .build();
 
 console.log(JSON.stringify(graphApiInput));
+```
+
+## Learn More
+
+check the code in the `index.js` file to learn how to use `jsforce` to make a call to invoke Salesforce Composite Graph API
+
+To learn more on how about the authentication and implementation, watch the below videos
+
+- [Implementing a JWT Server to Server OAuth between Salesforce and Heroku](https://www.youtube.com/watch?v=c5OZZsVkOKY)
+
+
+
+
