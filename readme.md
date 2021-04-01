@@ -56,7 +56,7 @@ check the code in the `index.js` file to learn how to use `jsforce` to make a ca
 To learn more on how about the authentication and implementation, watch the below videos
 
 - [Implementing a JWT Server to Server OAuth between Salesforce and Heroku](https://www.youtube.com/watch?v=c5OZZsVkOKY)
-- - [Implementing a Node.js service on Heroku to work with Salesforce Composite Graph API](https://www.youtube.com/watch?v=6xf7MtyX8xg)
+- [Implementing a Node.js service on Heroku to work with Salesforce Composite Graph API](https://www.youtube.com/watch?v=6xf7MtyX8xg)
 
 
 
